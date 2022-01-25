@@ -18,3 +18,5 @@ acrylamide:     2034 (boolean) values
 chloroacetamide:    2034 (boolean) values
 series:     1477 (categorical) values
 frag_id:    133 values
+
+More information about each heading is avaliable at https://github.com/postera-ai/COVID_moonshot_submissions
