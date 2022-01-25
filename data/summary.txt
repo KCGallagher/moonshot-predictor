@@ -1,0 +1,20 @@
+Data contains the following categories:
+
+SMILES:     Unique string representation of molecule, 2037 values
+CID:    Unique identifier of assay, 2037 values
+canonical_CID:  2037 values
+r_inhibition_at_20_uM:  0 values
+r_inhibition_at_50_uM:  0 values
+r_avg_IC50:     663 values
+f_inhibition_at_20_uM:  0 values
+f_inhibition_at_50_uM:  0 values
+f_avg_IC50:     1901 values
+f_avg_pIC50:    0 values
+relative_solubility_at_20_uM:   0 values
+relative_solubility_at_100_uM:  0 values
+trypsin_IC50:   131 values
+NMR_std_ratio:  0 values
+acrylamide:     2034 (boolean) values
+chloroacetamide:    2034 (boolean) values
+series:     1477 (categorical) values
+frag_id:    133 values
