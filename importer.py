@@ -6,13 +6,15 @@ def import_csv(filename):
     """Imports the csv file at a given path
     
     :param filename: Path and name of file to import
-    :type filename: string
+    :type filename: str
     :return: Dataframe of csv file
     """
     return pd.read_csv(filename, sep=',')
 
 def record_assays(df):
-    """Removes SMILES data to create assay dataframe
+    """Removes SMILES data to create assay dataframe, where
+    each row corresponds to a different assay (and a different 
+    molecule)
     
     :param df: Dataframe of input data
     :type df: Pandas Dataframe
@@ -28,22 +30,21 @@ def record_compounds(df):
     :type df: Pandas Dataframe
     :return: Dataframe of assay data
     """
-    return df['SMILES']
+    series =  df['SMILES']
+    return series.to_frame()
 
-
-def main():
-    input_data = "data/activity_data.csv"
-
+def import_data(filename):
+    """Imports the data at a given path
+    
+    :param filename: Path and name of file to import
+    :type filename: str
+    :return: Dataframes of assays and compounds
+    :return type: pandas Dataframe
+    """
     # Read in data
-    df = import_csv(input_data)
+    df = import_csv(filename)
 
     df_assay = record_assays(df)
     df_compounds = record_compounds(df)
     
-    print(df_assay.head())
-    print(df_compounds.head())
-
-    # Still need to implement foreign key
-
-if __name__ == '__main__':
-    main()
+    return df_assay, df_compounds
