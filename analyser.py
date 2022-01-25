@@ -13,9 +13,7 @@ def analyse_compounds(df_assay, df_compounds, func, name):
     :type name: str
     :return: Dataframe of assay data
     """
-    print(df_compounds.columns)
     df_compounds[name] = func(df_assay)
-    print(df_compounds.columns)
     return df_compounds
 
 

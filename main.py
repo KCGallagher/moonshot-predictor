@@ -10,8 +10,11 @@ def main():
     df_assay, df_compounds = import_data(input_data)
 
     # Analyse data (and record in df_compounds)
-    count_data_points(df_assay)
+    #count_data_points(df_assay)
     df_compounds = analyse_compounds(df_assay, df_compounds, am.type_of_amide, 'amide')
+    df_compounds = analyse_compounds(df_assay, df_compounds, am.pIC50, 'pIC50')
+
+    print(df_compounds[0:10])
 
 
 if __name__ == '__main__':
