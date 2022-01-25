@@ -4,7 +4,7 @@
 # may be vulnerable to SQL injection attacks, however
 # this script is designed for internal use only.
 
-import pandas as pd  # noqa
+import pandas as pd  
 import sqlite3
 from sqlite3 import Error
 
@@ -39,6 +39,34 @@ def print_head(conn, table):
     df = pd.read_sql_query(sql, conn)
     print(df.head())
 
+def connect_tables(conn, table_1, key_1, table_2):
+    # Add primary key in table_1 as foreign key in table 2
+    reference = (table_1 + "(" + key_1 + ")")
+    sql = ('ALTER TABLE {} ADD FOREIGN KEY {} REFERENCES {}'
+           .format(table_2, key_1, reference))
+    cur = conn.cursor()
+    cur.execute(sql)
+    conn.commit()
+    return table_1
+
+
+def connect_tables(conn, table_1, key_1, table_2):
+    # Add primary key in table_1 as foreign key in table 2
+    # Sadly sqlite is limited so I must create a new table:
+
+    # Rename table
+
+    # Create new table with foreign key
+
+    # Copy data into new table
+    
+    reference = (table_1 + "(" + key_1 + ")")
+    sql = ('ALTER TABLE {} ADD FOREIGN KEY {} REFERENCES {}'
+           .format(table_2, key_1, reference))
+    cur = conn.cursor()
+    cur.execute(sql)
+    conn.commit()
+    return table_1
 
 
 def main():
@@ -58,6 +86,7 @@ def main():
 
         # Create compounds table
         df['SMILES'].to_sql('compounds', conn, if_exists='replace', index=False)
+        connect_tables(conn, 'compounds', 'SMILES', 'assays')
         
         # Test output from database
         print_head(conn, 'compounds')
