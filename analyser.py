@@ -2,7 +2,7 @@
 
 import pandas
 
-def analyse_compounds(df_assay, df_compounds, func, name):
+def analyse_compounds(df_assay, df_compounds, name, func, **kwargs):
     """Analyse compound/assay data and add compound attributes to dataframe
     
     :param df: Dataframe of input data
@@ -13,9 +13,7 @@ def analyse_compounds(df_assay, df_compounds, func, name):
     :type name: str
     :return: Dataframe of assay data
     """
-    print(df_compounds.columns)
-    df_compounds[name] = func(df_assay)
-    print(df_compounds.columns)
+    df_compounds[name] = func(df_assay, **kwargs)
     return df_compounds
 
 
