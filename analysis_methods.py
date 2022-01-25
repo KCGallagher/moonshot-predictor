@@ -39,13 +39,4 @@ class AnalysisMethods:
         pIC50 = pd.Series(-np.log10(df[metric]))
         return (pIC50 > threshold)
 
-"""Determines pIC50, using specified IC50 metric. Distribution of
-        pIC50 values suggests we might was to use a classifier rather than
-        regression here
-        
-        :param df: Input dataframe of assay data
-        :type df: pandas Dataframe
-        :return: pandas Series
-        """
-
-# This is a pretty simple one but you can come up with more useful stuff in RDKit
+# These are pretty simple but you can come up with more useful stuff in RDKit
