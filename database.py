@@ -1,8 +1,9 @@
 # Creates a relational database from the binding data
 
-import pandas as pd
+import pandas as pd  # noqa
 import sqlite3
 from sqlite3 import Error
+
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
@@ -17,6 +18,29 @@ def create_connection(db_file):
         print(e)
     return conn
 
+def delete_molecule(conn, id):
+    """
+    Delete a molecule by molecule id
+    :param conn:  Connection to the SQLite database
+    :param id: id of the molecule
+    :return:
+    """
+    sql = 'DELETE FROM assays WHERE id=?'
+    cur = conn.cursor()
+    cur.execute(sql, (id,))
+    conn.commit()
+
+def remove_attribute(conn, attr):
+    """
+    Remove an attribute of all molecules
+    :param conn:  Connection to the SQLite database
+    :param attr: molecule attribute
+    :return:
+    """
+    sql = 'UPDATE assays SET SMILES = NULL'
+    cur = conn.cursor()
+    cur.execute(sql) 
+    conn.commit()
 
 def main():
     input_data = "data/activity_data.csv"
@@ -28,9 +52,17 @@ def main():
     # Create a database connection
     conn = create_connection(database)
 
-    # Read csv into database
+   
     with conn:
-        df.to_sql('activity', conn, if_exists='append', index=False)
+        # Read csv into database
+        df.to_sql('assays', conn, if_exists='replace', index=False)
+
+        # Delete task in database
+        remove_attribute(conn, "SMILES")
+        
+        # Test output from database
+        df2 = pd.read_sql_query("SELECT * from assays", conn)
+        print(df2.head())
 
     # Close connection if still open (fail-safe)
     conn.close
