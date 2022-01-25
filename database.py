@@ -1,5 +1,9 @@
 # Creates a relational database from the binding data
 
+# Methods here do not use full input sanitisation and 
+# may be vulnerable to SQL injection attacks, however
+# this script is designed for internal use only.
+
 import pandas as pd  # noqa
 import sqlite3
 from sqlite3 import Error
@@ -30,17 +34,12 @@ def delete_molecule(conn, id):
     cur.execute(sql, (id,))
     conn.commit()
 
-def remove_attribute(conn, attr):
-    """
-    Remove an attribute of all molecules
-    :param conn:  Connection to the SQLite database
-    :param attr: molecule attribute
-    :return:
-    """
-    sql = 'UPDATE assays SET SMILES = NULL'
-    cur = conn.cursor()
-    cur.execute(sql) 
-    conn.commit()
+def print_head(conn, table):
+    sql = "SELECT * from {}".format(table)  # Not secure - see header
+    df = pd.read_sql_query(sql, conn)
+    print(df.head())
+
+
 
 def main():
     input_data = "data/activity_data.csv"
@@ -54,15 +53,14 @@ def main():
 
    
     with conn:
-        # Read csv into database
-        df.to_sql('assays', conn, if_exists='replace', index=False)
+        # Create assays table
+        df.drop(['SMILES'], axis = 1).to_sql('assays', conn, if_exists='replace', index=False)
 
-        # Delete task in database
-        remove_attribute(conn, "SMILES")
+        # Create compounds table
+        df['SMILES'].to_sql('compounds', conn, if_exists='replace', index=False)
         
         # Test output from database
-        df2 = pd.read_sql_query("SELECT * from assays", conn)
-        print(df2.head())
+        print_head(conn, 'compounds')
 
     # Close connection if still open (fail-safe)
     conn.close
