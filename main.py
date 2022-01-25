@@ -11,8 +11,9 @@ def main():
 
     # Analyse data (and record in df_compounds)
     #count_data_points(df_assay)
-    df_compounds = analyse_compounds(df_assay, df_compounds, am.type_of_amide, 'amide')
-    df_compounds = analyse_compounds(df_assay, df_compounds, am.pIC50, 'pIC50')
+    df_compounds = analyse_compounds(df_assay, df_compounds, 'amide', am.type_of_amide)
+    df_compounds = analyse_compounds(df_assay, df_compounds, 'pIC50', am.pIC50)
+    df_compounds = analyse_compounds(df_assay, df_compounds, 'high_pIC50', am.pIC50_threshold, threshold = 0.5)
 
     print(df_compounds[0:10])
 
