@@ -68,34 +68,37 @@ def connect_tables(conn, table_1, key_1, table_2):
     :param table_2: Name of child table
     :return:
     """
-    cur = conn.cursor()  
+    cur = conn.cursor()
+    cur.execute("PRAGMA foreign_keys = off;")  
+    cur.execute("BEGIN TRANSACTION;")
 
     # Rename table
     cur.execute("DROP TABLE IF EXISTS _old_t") # for protection in case clean up not reached
-    rename_sql = "ALTER TABLE {} RENAME TO {}".format(table_2, '_old_t')
+    rename_sql = "ALTER TABLE {} RENAME TO {};".format(table_2, '_old_t')
     cur.execute(rename_sql)
 
     # Create new table with foreign key
     table_2_titles = ", ".join(find_columns(conn, '_old_t'))
     table_2_titles += ", {} VARCHAR".format(key_1)  # For foreign key column
-    create_sql = ("CREATE TABLE {2} ({3}, CONSTRAINT FK_{0} FOREIGN KEY ({0}) REFERENCES {1} ({0}))"
+    create_sql = ("CREATE TABLE {2} ({3}, CONSTRAINT FK_{0} FOREIGN KEY ({0}) REFERENCES {1} ({0}));"
         .format(key_1, table_1, table_2, table_2_titles))
     cur.execute(create_sql)
 
     # Add foreign key data to import table
-    add_sql_a = "ALTER TABLE _old_t ADD {}".format(key_1)
-    add_sql_b = "INSERT INTO _old_t ({0}) SELECT {0} FROM {1}".format(key_1, table_1)
+    add_sql_a = "ALTER TABLE _old_t ADD {};".format(key_1)
+    add_sql_b = "INSERT INTO _old_t ({0}) SELECT {0} FROM {1};".format(key_1, table_1)
     cur.execute(add_sql_a)
     cur.execute(add_sql_b)
     
     # Copy data into new table
-    insert_sql = "INSERT INTO {} SELECT * FROM _old_t".format(table_2)
+    insert_sql = "INSERT INTO {} SELECT * FROM _old_t;".format(table_2)
     cur.execute(insert_sql)
 
     # Delete temporary table
     cur.execute("DROP TABLE IF EXISTS _old_t")
 
     conn.commit()
+    cur.execute("PRAGMA foreign_keys=on;")
     return table_2
 
 
